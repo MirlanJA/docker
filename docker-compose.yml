@@ -8,24 +8,23 @@ services:
         NODE_VERSION: 10.21.0
       context: ./php-fpm
       dockerfile: Dockerfile
-    image: php:7.2
+    image: local-php:7.2-fpm
     container_name: php-fpm
     restart: unless-stopped
     working_dir: /var/www/
     volumes:
       - /home/mirlan/www:/var/www
-    expose:
-      - "9000"
+    ports:
+      - "9000:9000"
 
   mysql:
-    build:
-      context: ./mysql
     image: mysql:5.7
     container_name: mysql
     restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=secret
     volumes:
+      - ./mysql/conf:/etc/mysql/conf.d
       - ./mysql/dumps:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
@@ -42,13 +41,11 @@ services:
       - /home/mirlan/www:/var/www
       - ./nginx/sites/:/etc/nginx/conf.d
     depends_on:
-         - php-fpm
+      - php-fpm
 
   redis:
-    build:
-      context: ./redis
+    image: redis:latest
     container_name: redis
-    image: redis
+    restart: unless-stopped
     ports:
       - "6379:6379"
-    restart: unless-stopped

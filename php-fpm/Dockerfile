@@ -30,10 +30,11 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd mysqli json g
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Create system user to run Composer and Artisan Commands
-RUN useradd -G www-data,root -u $UID -d /home/$USER $USER
+COPY ./laravel.ini /usr/local/etc/php/conf.d
 
-RUN mkdir -p /home/$USER/.composer \
+# Create system user to run Composer and Artisan Commands
+RUN useradd -G www-data,root -u $UID -d /home/$USER $USER \
+    && mkdir -p /home/$USER/.composer \
     && chown -R $USER:$USER /home/$USER
 
 USER $USER
@@ -45,12 +46,15 @@ RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.5/install.sh
     && nvm install $NODE_VERSION \
     && nvm use node
 
+# Add aliases
+RUN git config --global alias.co checkout && git config --global alias.br branch \
+    && git config --global alias.ci commit && git config --global alias.st status
+
 USER root
 
-# Make a symbolic link for node
-RUN ln -s /home/$USER/.nvm/versions/node/v10.21.0/bin/node /usr/bin/node
-
-COPY ./laravel.ini /usr/local/etc/php/conf.d
+# Create symbolic links
+RUN ln -s /home/$USER/.nvm/versions/node/v10.21.0/bin/node /usr/bin/node \
+    && ln -s /home/$USER/.nvm/versions/node/v10.21.0/bin/npm /usr/bin/npm
 
 # Clean up
 RUN apt-get clean && \
