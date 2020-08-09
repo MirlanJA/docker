@@ -32,9 +32,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Create system user to run Composer and Artisan Commands
 RUN useradd -G www-data,root -u $UID -d /home/$USER $USER
-RUN mkdir -p /home/$USER/.composer && \
-    chown -R $USER:$USER /home/$USER
 
+RUN mkdir -p /home/$USER/.composer \
+    && chown -R $USER:$USER /home/$USER
+
+USER $USER
 
 # Install NodeJS using NVM
 RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.5/install.sh | bash > /dev/null \
@@ -43,12 +45,17 @@ RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.5/install.sh
     && nvm install $NODE_VERSION \
     && nvm use node
 
+USER root
+
+# Make a symbolic link for node
+RUN ln -s /home/$USER/.nvm/versions/node/v10.21.0/bin/node /usr/bin/node
+
 COPY ./laravel.ini /usr/local/etc/php/conf.d
 
 # Clean up
 RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    rm /var/log/lastlog /var/log/faillog
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && rm /var/log/lastlog /var/log/faillog
 
 # Set working directory
 WORKDIR /var/www

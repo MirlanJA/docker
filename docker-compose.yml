@@ -9,7 +9,7 @@ services:
       context: ./php-fpm
       dockerfile: Dockerfile
     image: php:7.2
-    container_name: php
+    container_name: php-fpm
     restart: unless-stopped
     working_dir: /var/www/
     volumes:
@@ -51,6 +51,4 @@ services:
     image: redis
     ports:
       - "6379:6379"
-    volumes:
-      - "./data/redis:/data"
     restart: unless-stopped
