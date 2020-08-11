@@ -2,18 +2,15 @@ version: "3.7"
 services:
   php-fpm:
     build:
-      args:
-        USER: laravel
-        UID: 1000
-        NODE_VERSION: 10.21.0
       context: ./php-fpm
       dockerfile: Dockerfile
     image: local-php:7.2-fpm
     container_name: php-fpm
     restart: unless-stopped
-    working_dir: /var/www/
+    working_dir: ${APP_CONTAINER}
     volumes:
-      - /home/mirlan/www:/var/www
+      - ${APP_HOST}:${APP_CONTAINER}
+      - ./php-fpm/local.ini:/usr/local/etc/php/conf.d/local.ini
     ports:
       - "9000:9000"
 
@@ -38,7 +35,7 @@ services:
       - "443:443"
       - "81:81"
     volumes:
-      - /home/mirlan/www:/var/www
+      - ${APP_HOST}:${APP_CONTAINER}
       - ./nginx/sites/:/etc/nginx/conf.d
     depends_on:
       - php-fpm
@@ -49,3 +46,10 @@ services:
     restart: unless-stopped
     ports:
       - "6379:6379"
+
+  node:
+    image: node:10.21.0
+    container_name: node
+    volumes:
+      - ${APP_HOST}:${APP_CONTAINER}
+    working_dir: ${APP_CONTAINER}
