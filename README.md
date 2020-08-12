@@ -45,15 +45,22 @@ function d_stop() {
 }
 ```
 
-- Запуск команд ARTISAN
+- Запуск команд `php artisan`
 ```sh
 function art() {
  ( cd path_to_project && docker-compose exec php-fpm php artisan "$@" )
 }
 ```
-- Запуск команд NPM
+- Запуск команд `npm`
 ```sh
 function npm() {
  (cd path_to_project && docker-compose run node npm "$@")
+}
+```
+
+- Запуск команд `composer`
+```sh
+function comx() {
+ (cd path_to_project && docker-compose exec php-fpm composer "$@")
 }
 ```
