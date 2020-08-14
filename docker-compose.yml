@@ -1,11 +1,11 @@
-version: "3.7"
+version: "3.8"
 services:
   php-fpm:
     build:
       context: ./php-fpm
       dockerfile: Dockerfile
-    image: local-php:7.2-fpm
-    container_name: php-fpm
+    image: ${APP_PREFIX}-${PHP_IMAGE}
+    container_name: ${APP_PREFIX}-php-fpm
     restart: unless-stopped
     working_dir: ${APP_CONTAINER}
     volumes:
@@ -15,20 +15,21 @@ services:
       - "9000:9000"
 
   mysql:
-    image: mysql:5.7
-    container_name: mysql
+    image: ${MYSQL_IMAGE}
+    container_name: ${APP_PREFIX}-mysql
     restart: unless-stopped
     environment:
-      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
     volumes:
-      - ./mysql/conf:/etc/mysql/conf.d
-      - ./mysql/dumps:/docker-entrypoint-initdb.d
+      - ./mysql:/etc/mysql/conf.d
     ports:
       - "3306:3306"
 
   nginx:
-    image: nginx:alpine
-    container_name: nginx
+    image: ${NGINX_IMAGE}
+    container_name: ${APP_PREFIX}-nginx
     restart: unless-stopped
     ports:
       - "80:80"
@@ -36,20 +37,20 @@ services:
       - "81:81"
     volumes:
       - ${APP_HOST}:${APP_CONTAINER}
-      - ./nginx/sites/:/etc/nginx/conf.d
+      - ./nginx:/etc/nginx/conf.d
     depends_on:
       - php-fpm
 
   redis:
-    image: redis:latest
-    container_name: redis
+    image: ${REDIS_IMAGE}
+    container_name: ${APP_PREFIX}-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
 
   node:
-    image: node:10.21.0
-    container_name: node
+    image: ${NODE_IMAGE}
+    container_name: ${APP_PREFIX}-node
     volumes:
       - ${APP_HOST}:${APP_CONTAINER}
     working_dir: ${APP_CONTAINER}
