@@ -1,4 +1,4 @@
-# Докеризация проекта autoxml
+# Докеризация проекта на Laravel
 
 # Требования
 - [Docker](https://docs.docker.com/engine/install/) - Install Docker Engine
