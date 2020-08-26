@@ -29,37 +29,37 @@
 Добавляем в конец файла ***~/.bashrc***. 
 Название команд можно поменять на удобное
 
-**path_to_project** - пусть к папке с докером в проекте, например /home/user/www/example.test/docker
+**path_to_docker** - пусть к папке с докером в проекте, например /home/user/www/example.test/docker
 
 - Запуск контейнеров
 ```sh
 function d_start() {
- ( cd path_to_project && docker-compose up -d )
+ ( cd path_to_docker && docker-compose up -d )
 }
 ```
 - Остановка контейнеров
 ```sh
 function d_stop() {
-   ( cd path_to_project && docker-compose stop )
+   ( cd path_to_docker && docker-compose stop )
 }
 ```
 
 - Запуск команд `php artisan`
 ```sh
 function art() {
- ( cd path_to_project && docker-compose exec php-fpm php artisan "$@" )
+ ( cd path_to_docker && docker-compose exec php-fpm php artisan "$@" )
 }
 ```
 - Запуск команд `npm`
 ```sh
 function npm() {
- (cd path_to_project && docker-compose run --rm node npm "$@")
+ (cd path_to_docker && docker-compose run --rm node npm "$@")
 }
 ```
 
 - Запуск команд `composer`
 ```sh
 function comx() {
- (cd path_to_project && docker-compose exec php-fpm composer "$@")
+ (cd path_to_docker && docker-compose exec php-fpm composer "$@")
 }
 ```
