@@ -1,4 +1,6 @@
-FROM php:7.2-fpm
+ARG IMAGE
+
+FROM ${IMAGE}
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -34,7 +36,5 @@ RUN apt-get clean && \
     && rm /var/log/lastlog /var/log/faillog
 
 USER www
-
-EXPOSE 9000
 
 CMD ["php-fpm"]

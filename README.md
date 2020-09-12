@@ -46,20 +46,20 @@ function d_stop() {
 
 - Запуск команд `php artisan`
 ```sh
-function art() {
+function d_art() {
  ( cd path_to_docker && docker-compose exec php-fpm php artisan "$@" )
 }
 ```
 - Запуск команд `npm`
 ```sh
-function npm() {
+function d_npm() {
  (cd path_to_docker && docker-compose run --rm node npm "$@")
 }
 ```
 
 - Запуск команд `composer`
 ```sh
-function comx() {
+function d_comx() {
  (cd path_to_docker && docker-compose exec php-fpm composer "$@")
 }
 ```
