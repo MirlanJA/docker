@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
   php-fpm:
     build:
@@ -13,16 +14,20 @@ services:
     volumes:
       - ${APP_HOST}:${APP_CONTAINER}
       - ./php-fpm/local.ini:/usr/local/etc/php/conf.d/local.ini
+    extra_hosts:
+      - "dockerhost:172.18.0.6"
+      - "autoxml.tech:172.18.0.6"
+      - "img.tech:172.18.0.6"
 
   mysql:
     image: ${MYSQL_IMAGE}
     container_name: ${APP_PREFIX}-mysql
     restart: unless-stopped
+    command:
+      - --sort_buffer_size=1073741824
+      - --default-authentication-plugin=mysql_native_password
     environment:
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_RANDOM_ROOT_PASSWORD=true
+      - MYSQL_ROOT_PASSWORD=root
     volumes:
       - ./mysql:/etc/mysql/conf.d
     ports:
