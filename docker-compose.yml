@@ -14,10 +14,12 @@ services:
     volumes:
       - ${APP_HOST}:${APP_CONTAINER}
       - ./php-fpm/local.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./php-fpm/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+      - ./php-fpm/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
     extra_hosts:
-      - "dockerhost:172.18.0.6"
-      - "autoxml.tech:172.18.0.6"
-      - "img.tech:172.18.0.6"
+      - "dockerhost:172.18.0.2"
+      - "autoxml.tech:172.18.0.2"
+      - "img.tech:172.18.0.2"
 
   mysql:
     image: ${MYSQL_IMAGE}

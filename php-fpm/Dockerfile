@@ -14,16 +14,17 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     libzip-dev \
-    libmagickwand-dev \
-    libgmp-dev \
-    imagemagick
+    libmagickwand-dev --no-install-recommends \
+    libgmp-dev
 
 # Install PHP extensions
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd mysqli json gmp \
-    && pecl install -o -f redis && rm -rf /tmp/pear && docker-php-ext-enable redis \
+RUN rm -rf /var/lib/apt/lists/* \
     && pecl install imagick && docker-php-ext-enable imagick \
+    && docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd mysqli json gmp \
+    && pecl install -o -f redis && rm -rf /tmp/pear && docker-php-ext-enable redis \
     && docker-php-ext-configure zip --with-libzip && docker-php-ext-install zip \
-    && docker-php-ext-configure intl && docker-php-ext-install intl
+    && docker-php-ext-configure intl && docker-php-ext-install intl \
+    && pecl install xdebug && docker-php-ext-enable xdebug
 
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
